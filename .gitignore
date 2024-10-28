@@ -1,0 +1,34 @@
+# dependencies
+/node_modules
+.pnp.js
+
+# build outputs
+dist
+dist-ssr
+build
+/out
+
+
+# editors and operating systems
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# logs
+logs
+*.log
+*debug.log*
+*error.log*
+
+# testing
+/coverage
+
+# caching
+/cache
+.vscode
