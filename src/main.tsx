@@ -1,28 +1,41 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
-import { CssBaseline, ThemeProvider } from '@mui/material'
+import { CssBaseline } from '@mui/material'
+import { Provider as JotaiProvider } from 'jotai'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-// Import the generated route tree
 import { routeTree } from './routeTree.gen'
-import theme from './theme'
+import { useTheme } from './hooks/custom/useTheme'
+import ThemeTransition from './ThemeTransition'
 
-// Create a new router instance
-const router = createRouter({ routeTree })
+const router = createRouter({ routeTree, basepath: '/wsd-movie-clone/' })
 
-// Register the router instance for type safety
 declare module '@tanstack/react-router' {
   interface Register {
     router: typeof router
   }
 }
 
+const queryClient = new QueryClient()
+
+const App = () => {
+  const { theme } = useTheme()
+  return (
+    <ThemeTransition theme={theme}>
+      <CssBaseline />
+      <RouterProvider router={router}/>
+    </ThemeTransition>
+  )
+}
+
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <RouterProvider router={router} />
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <JotaiProvider>
+        <App />
+      </JotaiProvider>
+    </QueryClientProvider>
   </React.StrictMode>
 )

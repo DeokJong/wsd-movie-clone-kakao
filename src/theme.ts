@@ -1,50 +1,66 @@
-import { createTheme as createMuiTheme } from '@mui/material/styles'
+import { createTheme } from '@mui/material/styles'
+import { deepmerge } from '@mui/utils'
+
+import { SBAggro } from './font'
+
+const addGlobalStyle = (styleString: string) => {
+  const style = document.createElement('style')
+  style.appendChild(document.createTextNode(styleString))
+  document.head.appendChild(style)
+}
+
+addGlobalStyle(SBAggro)
 
 declare module '@mui/material/styles/createPalette' {
   interface PaletteOptions {
     gradients?: {
-      desktop?: string
-      mobile?: string
-      tablet?: string
-      nav?: string
-      lightblueComponent?: string
-      // You can add more gradient definitions here if needed
+      background?: string
+      complementary?: string
+    }
+    TypographyColor?: {
+      primary?: string
+      secondary?: string
+    }
+    TypographyBackground?: {
+      primary?: string
+      secondary?: string
+    }
+    concept?: {
+      primary?: string
+      secondary?: string
+      complementary?: string
     }
   }
   interface Palette {
     gradients: {
-      desktop: string
-      mobile: string
-      tablet: string
-      nav: string
-      lightblueComponent: string
-      // Match the PaletteOptions gradients structure
+      background: string
+      complementary: string
+    }
+    TypographyColor: {
+      primary: string
+      secondary: string
+    }
+    TypographyBackground: {
+      primary: string
+      secondary: string
+    }
+    concept: {
+      primary: string
+      secondary: string
+      complementary: string
     }
   }
 }
 
-const theme = createMuiTheme({
+const baseTheme = createTheme({
   palette: {
     common: {
       black: '#000',
       white: '#fff',
     },
-    primary: {
-      light: '#7986cb',
-      main: '#3f51b5',
-      dark: '#303f9f',
-      contrastText: '#fff',
-    },
-    gradients: {
-      desktop: 'linear-gradient(135deg, #f5f7fa, #d4e0eb, #c3cfe2)',
-      mobile: 'linear-gradient(135deg, #f5f7fa, #d4e0eb, #c3cfe2)',
-      tablet: 'linear-gradient(135deg, #f5f7fa, #d4e0eb, #c3cfe2)',
-      nav: 'linear-gradient(180deg, rgba(17, 24, 39, 1), rgba(31, 41, 55, 1))',
-      lightblueComponent: 'linear-gradient(135deg, #f5f7fa, #d4e0eb, #c3cfe2)',
-    },
   },
   typography: {
-    fontFamily: '"Noto Sans KR","SBAggro","Consolas","Arial", sans-serif',
+    fontFamily: '"SBAggro","Consolas","Arial", sans-serif',
     fontSize: 14,
     fontWeightLight: 300,
     fontWeightRegular: 400,
@@ -116,4 +132,50 @@ const theme = createMuiTheme({
   },
 })
 
-export default theme
+const whiteTheme = deepmerge(baseTheme, {
+  palette: {
+    mode: 'light',
+    gradients: {
+      background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+      complementary: 'linear-gradient(45deg, #017060 30%, #005A8C 90%)',
+    },
+    TypographyColor: {
+      primary: '#1a1a1a',
+      secondary: '#b0b0b0', // Darker secondary color
+    },
+    TypographyBackground: {
+      primary: '#d0d0d0', // Darker primary background
+      secondary: '#a0a0a0', // Slightly darker complementary color
+    },
+    concept: {
+      primary: '#FE99A0',
+      secondary: '#FF8A73',
+      complementary: '#01A474',
+    }
+  },
+})
+
+const darkTheme = deepmerge(baseTheme, {
+  palette: {
+    mode: 'dark',
+    gradients: {
+      background: 'linear-gradient(45deg, #017060 30%, #005A8C 90%)',
+      complementary: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+    },
+    TypographyColor: {
+      primary: '#b0b0b0', // Darker primary color
+      secondary: '#1a1a1a',
+    },
+    TypographyBackground: {
+      primary: '#0f0f0f',
+      secondary: '#a0a0a0', // Slightly darker complementary color
+    },
+    concept: {
+      primary: '#017060',
+      secondary: '#005A8C',
+      complementary: '#FE6B8B',
+    },
+  },
+})
+
+export { whiteTheme, darkTheme }
