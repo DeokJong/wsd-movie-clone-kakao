@@ -3,6 +3,7 @@ import { atom, useAtom } from 'jotai'
 
 import { errors } from '@/Constant'
 import { BcryptEncoder } from '@/Utils'
+import { KakaoApiService } from '@/Services'
 
 export type TDataLogin = {
   email: string
@@ -41,7 +42,6 @@ const isRememberMe = () => {
 }
 
 export const isAuth = (): boolean => {
-  console.log(getKakaoAccessToken())
   if (getKakaoAccessToken()) {
     return true
   }
@@ -54,8 +54,11 @@ export const getPassword = () => {
 }
 
 export const getCurrentUserFullName = () => {
-  const email = sessionStorage.getItem('email') || localStorage.getItem('email')
-  return localStorage.getItem(`user:${email}:fullName`)
+  if (isAuth()) {
+    const email = sessionStorage.getItem('email') || localStorage.getItem('email')
+    return localStorage.getItem(`user:${email}:fullName`)
+  }
+  return null
 }
 
 export const setCurrentUserFullName = (fullname: string, email: string) => {
@@ -140,12 +143,14 @@ export const useAuth = () => {
     setKakaoAccessToken('', isRememberMe)
   }
 
-  const logout = () => {
+  const logout = async () => {
     localStorage.removeItem('email')
     sessionStorage.removeItem('email')
     localStorage.removeItem('isRememberMe')
     setIsLogin(false)
     setKakaoAccessToken('')
+    const response = await KakaoApiService.logout()
+    console.log(response)
     window.location.reload()
   }
 

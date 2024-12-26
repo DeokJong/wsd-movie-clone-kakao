@@ -4,7 +4,6 @@ import { OpenAPIKakaoAuth, CancelablePromise, request } from '@/Core'
 
 export class KakaoService {
   public static token(data: TTokenRequest): CancelablePromise<TTokenResponse> {
-    console.log(data)
     return request(OpenAPIKakaoAuth, {
       ...data,
       url: '/oauth/token',

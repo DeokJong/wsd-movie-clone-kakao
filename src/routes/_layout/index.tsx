@@ -1,9 +1,10 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { Fade, Pagination, Stack } from '@mui/material'
 
 import { Poster, HorizontalScrollContainer, Banner } from '@/Components'
 import { useDiscoverMovie, useDiscoverTV } from '@/Hooks'
+import { KakaoApiService } from '@/Services'
 
 export const Route = createFileRoute('/_layout/')({
   component: index
@@ -20,24 +21,28 @@ function index() {
     error: discoverTVError,
     isLoading: isDiscoverTVLoading,
   } = useDiscoverTV()
-
   const [currentPage, setCurrentPage] = useState(1)
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await KakaoApiService.me()
+        console.log(response)
+      } catch (error) {
+        console.log('Not logged in')
+      }
+    }
+    fetchData()
+  }, [])
 
   const paginatedMovie = useMemo(() => {
     if (!discoverMovies?.length) return null
     return discoverMovies[currentPage - 1] || null
   }, [discoverMovies, currentPage])
 
-  const handlePageChange = (_: React.ChangeEvent<unknown>, page: number) => {
-    setCurrentPage(page)
-  }
-
   if (isDiscoverMoviesLoading || isDiscoverTVLoading) {
     return <div>Loading...</div>
   }
-
-  console.log(discoverMovies)
-  console.log(discoverTV)
 
   return (
     <>
@@ -59,7 +64,9 @@ function index() {
         <Pagination
           count={discoverMovies?.length ?? 0}
           page={currentPage}
-          onChange={handlePageChange}
+          onChange={(_: React.ChangeEvent<unknown>, page: number) => {
+            setCurrentPage(page)
+          }}
           color="primary"
           size={window.innerWidth < 600 ? 'medium' : 'large'}
           sx={(theme) => ({
@@ -105,9 +112,6 @@ function index() {
             />
           ))}
       </HorizontalScrollContainer>
-
-      {/* TODO 카테고리별 섹션 */}
-      {/* TODO 탐색 가능한 장르 */}
     </>
   )
 }

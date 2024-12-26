@@ -22,7 +22,6 @@ export const usePopularMovies = () => {
 
   const handleLoadMore = async () => {
     await fetchNextPage()
-    console.log('fetchNextPage')
   }
 
   const combinedData = data?.pages.flat() || []

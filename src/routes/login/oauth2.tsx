@@ -41,7 +41,6 @@ function oauth2() {
       }
       if (getKakaoAccessToken()) {
         const response2 = await KakaoApiService.me()
-        console.log(response2)
         setCurrentUserFullName(response2.properties.nickname, response2.kakao_account.email)
         localStorage.setItem('email', response2.kakao_account.email)
         window.location.href = '/'

@@ -9,4 +9,11 @@ export class KakaoApiService {
       method: 'GET',
     })
   }
+
+  public static logout() {
+    return request(OpenAPIKakaoToken, {
+      url: '/v1/user/logout',
+      method: 'POST',
+    })
+  }
 }
