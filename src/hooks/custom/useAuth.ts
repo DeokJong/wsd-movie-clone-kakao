@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { atom, useAtom } from 'jotai'
 
 import { errors } from '@/Constant'
+import { BcryptEncoder } from '@/Utils'
 
 export type TDataLogin = {
   email: string
@@ -40,12 +41,41 @@ const isRememberMe = () => {
 }
 
 export const isAuth = (): boolean => {
+  console.log(getKakaoAccessToken())
+  if (getKakaoAccessToken()) {
+    return true
+  }
   return isRememberMe() ? !!localStorage.getItem('email') : !!sessionStorage.getItem('email')
 }
 
 export const getPassword = () => {
   const email = sessionStorage.getItem('email') || localStorage.getItem('email')
   return localStorage.getItem(`user:${email}:password`)
+}
+
+export const getCurrentUserFullName = () => {
+  const email = sessionStorage.getItem('email') || localStorage.getItem('email')
+  return localStorage.getItem(`user:${email}:fullName`)
+}
+
+export const setCurrentUserFullName = (fullname: string, email: string) => {
+  localStorage.setItem(`user:${email}:fullName`, fullname)
+}
+
+export const getCurrentUser = () => {
+  return localStorage.getItem('currentUser')
+}
+
+export const setKakaoAccessToken = (accessToken: string, isRememberMe?: boolean) => {
+  if (isRememberMe) {
+    localStorage.setItem('kakaoAccessToken', accessToken)
+  } else {
+    sessionStorage.setItem('kakaoAccessToken', accessToken)
+  }
+}
+
+export const getKakaoAccessToken = () => {
+  return localStorage.getItem('kakaoAccessToken') || sessionStorage.getItem('kakaoAccessToken')
 }
 
 const loginAtom = atom<boolean>(false)
@@ -67,13 +97,15 @@ export const useAuth = () => {
         setIsLogin(true)
       }
     }
+    if (getKakaoAccessToken()) {
+      setIsLogin(true)
+    }
   }, [])
 
   const register = ({ email, password, confirmPassword, fullName }: TDataRegister) => {
     if (password !== confirmPassword) {
       throw new AuthError(400, 'Password and confirm password do not match')
     }
-
     if (localStorage.getItem(`user:${email}:password`)) {
       throw new AuthError(409, 'Email already exists')
     }
@@ -82,7 +114,9 @@ export const useAuth = () => {
       throw new AuthError(400, 'Email, password, and full name are required')
     }
 
-    localStorage.setItem(`user:${email}:password`, password)
+    const hashedPassword = BcryptEncoder.hash(password)
+
+    localStorage.setItem(`user:${email}:password`, hashedPassword)
     localStorage.setItem(`user:${email}:fullName`, fullName)
   }
 
@@ -90,7 +124,7 @@ export const useAuth = () => {
     const storedPassword = localStorage.getItem(`user:${email}:password`)
     if (!storedPassword) {
       throw new AuthError(404, 'User not found')
-    } else if (rawPassword !== storedPassword) {
+    } else if (!BcryptEncoder.compare(rawPassword, storedPassword)) {
       throw new AuthError(401, 'Invalid password')
     }
 
@@ -101,6 +135,9 @@ export const useAuth = () => {
       localStorage.setItem('isRememberMe', 'false')
       sessionStorage.setItem('email', email)
     }
+
+    setKakaoAccessToken('')
+    setKakaoAccessToken('', isRememberMe)
   }
 
   const logout = () => {
@@ -108,6 +145,7 @@ export const useAuth = () => {
     sessionStorage.removeItem('email')
     localStorage.removeItem('isRememberMe')
     setIsLogin(false)
+    setKakaoAccessToken('')
     window.location.reload()
   }
 
