@@ -144,14 +144,19 @@ export const useAuth = () => {
   }
 
   const logout = async () => {
-    localStorage.removeItem('email')
-    sessionStorage.removeItem('email')
-    localStorage.removeItem('isRememberMe')
-    setIsLogin(false)
-    setKakaoAccessToken('')
-    const response = await KakaoApiService.logout()
-    console.log(response)
-    window.location.reload()
+    try {
+      const response = await KakaoApiService.logout()
+      console.log(response)
+    } catch (error) {
+      console.error(error)
+    } finally {
+      localStorage.removeItem('email')
+      sessionStorage.removeItem('email')
+      localStorage.removeItem('isRememberMe')
+      setIsLogin(false)
+      setKakaoAccessToken('')
+      window.location.reload()
+    }
   }
 
   return {

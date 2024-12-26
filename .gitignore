@@ -2,6 +2,7 @@
 /node_modules
 .pnp.js
 .env*
+!.env.example
 
 # build outputs
 dist

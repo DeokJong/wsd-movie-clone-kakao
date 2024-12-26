@@ -1,13 +1,20 @@
 import { useEffect, useMemo, useState } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 import { Fade, Pagination, Stack } from '@mui/material'
+import { toast } from 'react-toastify'
 
 import { Poster, HorizontalScrollContainer, Banner } from '@/Components'
-import { useDiscoverMovie, useDiscoverTV } from '@/Hooks'
+import { isAuth, useDiscoverMovie, useDiscoverTV } from '@/Hooks'
 import { KakaoApiService } from '@/Services'
 
 export const Route = createFileRoute('/_layout/')({
-  component: index
+  component: index,
+  beforeLoad: () => {
+    if (!isAuth()) {
+      toast.info('You must be logged in to view the application')
+      throw redirect({ to: '/login' })
+    }
+  },
 })
 
 function index() {
