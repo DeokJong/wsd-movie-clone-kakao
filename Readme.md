@@ -40,10 +40,10 @@
     npm install
     ```
 
-3. **환경변수 설정**:
+3. **개발용 환경변수 설정**:
 
     ```bash
-    cp .env.example .env
+    cp .env.example .env-dev
     ```
 
 4. **개발 서버 실행**:
