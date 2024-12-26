@@ -5,7 +5,7 @@
   "type": "module",
   "homepage": "https://wsd-movie-clone.github.io/wsd-movie-clone/",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --mode dev",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
