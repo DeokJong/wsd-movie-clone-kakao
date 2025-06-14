@@ -15,22 +15,16 @@ import {
   Button,
 } from '@mui/material'
 import { useEffect, useState, useRef, useCallback } from 'react'
-import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { motion, AnimatePresence } from 'framer-motion'
 import { GridView, Movie, Tv, ViewList } from '@mui/icons-material'
 
-import { isAuth, usePopularMovies, usePopularTV } from '@/Hooks'
+import { usePopularMovies, usePopularTV } from '@/Hooks'
 import { Poster } from '@/Components'
 import { getImageURI } from '@/Utils'
 
 export const Route = createFileRoute('/_layout/popular')({
-  component: Popular,
-  beforeLoad: () => {
-    if (!isAuth()) {
-      toast.info('You must be logged in to view the application')
-      throw redirect({ to: '/login' })
-    }
-  },
+  component: Popular
 })
 
 function Popular() {
