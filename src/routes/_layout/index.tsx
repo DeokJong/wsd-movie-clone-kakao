@@ -3,7 +3,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Fade, Pagination, Stack } from '@mui/material'
 
 import { Poster, HorizontalScrollContainer, Banner } from '@/Components'
-import {  useDiscoverMovie, useDiscoverTV } from '@/Hooks'
+import { useDiscoverMovie, useDiscoverTV } from '@/Hooks'
 import { KakaoApiService } from '@/Services'
 
 export const Route = createFileRoute('/_layout/')({
